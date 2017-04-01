@@ -10,6 +10,9 @@ public class NetworkSimulator
      * @param args[1] time between messages
      * @param args[2] loss probability
      * @param args[3] curroption probability
+     * @param args[4] Window size
+     * @param args[5] Protocol (GBN = 0, TCP = 1)
+     * @param args[6] Debug (No Debug=0, anything 0< = Debug)
      */
     public static void main(String[] args)
     {

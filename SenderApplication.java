@@ -26,9 +26,7 @@ public class SenderApplication
     
     public void sendMessage()
     {
- 
         st.sendMessage(new Message(messages.get(index++)));
-
     }
     
 
