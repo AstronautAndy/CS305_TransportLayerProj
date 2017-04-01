@@ -1,7 +1,8 @@
 
 import java.util.ArrayList;
 /**
- * A class which represents the receiver transport layer
+ * A class which represents the receiver transport layer.
+ * Should bundle messages received from the network simulation into packets that are sent via the network layer
  */
 public class SenderTransport
 {
@@ -16,16 +17,21 @@ public class SenderTransport
 
     }
 
+    
     public void initialize()
     {
+        //Set timeline used to the timeline located in the network Layer being accessed
+        setTimeLine(nl.tl); 
     }
 
     public void sendMessage(Message msg)
     {
+        System.out.println("  Sender transport is now sending message w/ text: " + msg.getMessage());
     }
 
     public void receiveMessage(Packet pkt)
     {
+        System.out.println("  Sender Transport is now receiving packet w/ msg text: " + pkt.getMessage().getMessage());
     }
 
     public void timerExpired()

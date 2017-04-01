@@ -17,7 +17,10 @@ public class ReceiverTransport
     public void initialize()
     {
     }
-
+    
+    /*
+     * This function is used to receive pkts from the sending side of the application. Does "stuff" with the 
+     */
     public void receiveMessage(Packet pkt)
     {
     }

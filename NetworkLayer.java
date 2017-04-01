@@ -21,6 +21,7 @@ public class NetworkLayer
     //sending packet if it is not lost, and curropting it if necessary.
     public void sendPacket(Packet pkt, int to)
     {
+        System.out.println("   Network layer now sending packet");
         if(ran.nextDouble()<lossProbability)
         {
             if(NetworkSimulator.DEBUG>1)

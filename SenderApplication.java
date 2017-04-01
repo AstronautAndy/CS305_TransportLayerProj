@@ -10,6 +10,9 @@ public class SenderApplication
     private int index; //how many messages has the application sent so far
     private Timeline tl; //the timeline associated with the simulation
     
+    /**
+     * The sender application simply controls SenderTransport, telling it when to send a new message
+    */
     public SenderApplication(ArrayList<String> messages, NetworkLayer nl)
     {
         st = new SenderTransport(nl);
@@ -24,8 +27,10 @@ public class SenderApplication
         return st;
     }
     
+    
     public void sendMessage()
     {
+        System.out.println(" Sender Application sending new message");
         st.sendMessage(new Message(messages.get(index++)));
     }
     

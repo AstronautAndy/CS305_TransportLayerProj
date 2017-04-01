@@ -1,6 +1,7 @@
 #BlueJ class context
 comment0.params=messages\ nl
 comment0.target=SenderApplication(java.util.ArrayList,\ NetworkLayer)
+comment0.text=\r\n\ The\ sender\ application\ simply\ controls\ SenderTransport,\ telling\ it\ when\ to\ send\ a\ new\ message\r\n
 comment1.params=
 comment1.target=SenderTransport\ getSenderTransport()
 comment2.params=
