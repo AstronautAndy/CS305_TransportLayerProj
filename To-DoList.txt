@@ -1,4 +1,5 @@
 [] Write code in Sender Transport to "bundle" message into send-able packet
+ - [] Figure out how we're going to increment seqnum, acknum, and checksum values (belonging to the packet class) in the Sender Transport class
 [] Write code so that the Sender Transport will send data to the Network layer
 [] Make the Network layer able to send packets to the receiver transport 
 [] Fill in receive(packet pkt) method in Receiver transport. Should return an  ACK message if message is not corrupted, 
