@@ -54,7 +54,7 @@ public class NetworkSimulator
             {
                 sa.sendMessage();
                 if(DEBUG>0)
-                    System.out.println("Message sent from sender to receiver at time " + currentEvent.getTime());   
+                    System.out.println(">Message sent from sender to receiver at time " + currentEvent.getTime());   
             }
             //if event is a message arrival
             else if (currentEvent.getType()==Event.MESSAGEARRIVE)
