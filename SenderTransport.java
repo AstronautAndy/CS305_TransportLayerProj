@@ -27,6 +27,12 @@ public class SenderTransport
     public void sendMessage(Message msg)
     {
         System.out.println("  Sender transport is now sending message w/ text: " + msg.getMessage());
+        if(usingTCP){
+            
+        }
+        else{
+            
+        }
     }
 
     public void receiveMessage(Packet pkt)
