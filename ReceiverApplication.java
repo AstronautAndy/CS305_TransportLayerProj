@@ -6,7 +6,9 @@ public class ReceiverApplication
 {
     public void receiveMessage(Message msg)
     {
-        System.out.println("from receiver:" + msg.getMessage());
+        if(Config.debug > 0){
+            System.out.println("from receiver:" + msg.getMessage());
+        }
     }
 
 }

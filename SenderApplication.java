@@ -30,7 +30,9 @@ public class SenderApplication
     
     public void sendMessage()
     {
-        System.out.println(" Sender Application sending new message");
+        if(Config.debug > 0){
+            System.out.println(" Sender Application sending new message");
+        }
         st.sendMessage(new Message(messages.get(index++)));
     }
     

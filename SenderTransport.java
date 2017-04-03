@@ -26,7 +26,9 @@ public class SenderTransport
 
     public void sendMessage(Message msg)
     {
-        System.out.println("  Sender transport is now sending message w/ text: " + msg.getMessage());
+        if(Config.debug > 0){
+            System.out.println("  Sender transport is now sending message w/ text: " + msg.getMessage());
+        }
         if(usingTCP){
             
         }
@@ -37,7 +39,9 @@ public class SenderTransport
 
     public void receiveMessage(Packet pkt)
     {
-        System.out.println("  Sender Transport is now receiving packet w/ msg text: " + pkt.getMessage().getMessage());
+        if(Config.debug > 0){
+            System.out.println("  Sender Transport is now receiving packet w/ msg text: " + pkt.getMessage().getMessage());
+        }
     }
 
     public void timerExpired()
