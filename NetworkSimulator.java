@@ -47,6 +47,7 @@ public class NetworkSimulator
         {
             //get next event
             currentEvent = tl.returnNextEvent();
+			System.out.println("Event type: " + currentEvent.type);
             //if no event present, break out
             if(currentEvent==null)
                 break;
