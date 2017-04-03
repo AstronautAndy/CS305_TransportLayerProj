@@ -47,10 +47,12 @@ public class NetworkSimulator
         {
             //get next event
             currentEvent = tl.returnNextEvent();
-			System.out.println("Event type: " + currentEvent.type);
+			
             //if no event present, break out
             if(currentEvent==null)
                 break;
+
+			System.out.println("Event type: " + currentEvent.type);
             //if event is time to send a message, call the send message function of the sender application.   
             if(currentEvent.getType()==Event.MESSAGESEND)
             {

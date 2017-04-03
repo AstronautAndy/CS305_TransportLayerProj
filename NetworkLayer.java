@@ -36,8 +36,9 @@ public class NetworkLayer
                 System.out.println("Packet seq:" + pkt.getSeqnum() + " ack: " + pkt.getAcknum() + " curropted");
             pkt.corrupt();
         }
-        if(NetworkSimulator.DEBUG>1)
+        if(NetworkSimulator.DEBUG>1){
             System.out.println("Packet seq:" + pkt.getSeqnum() + " ack: " + pkt.getAcknum() + " sent");
+        }
         tl.createArriveEvent(pkt,to);
     }
 

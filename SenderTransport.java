@@ -33,10 +33,14 @@ public class SenderTransport
         }
         else{
 			//Remember that the constructor for the packet is (message, seqnum, acknum, checksum)
+			Packet newPkt = new Packet(msg, 0,0,0); //Need to figure out a more appropriate checksum and ack #
+				nl.sendPacket(newPkt, 0); //remember that the second parameter is "to"
+				/*
             for(int i=0; i<n; i++){ 
 				Packet newPkt = new Packet(msg, i,i,0); //Need to figure out a more appropriate checksum and ack #
 				nl.sendPacket(newPkt, i); //remember that the second parameter is "to"
             }
+            */
         }
     }
 
