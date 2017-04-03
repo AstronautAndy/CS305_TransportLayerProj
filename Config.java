@@ -10,6 +10,7 @@ public class Config
 {
     // instance variables - replace the example below with your own
     static int debug;
+    static int windowSize;
 
     /**
      * Constructor for objects of class Config
@@ -21,5 +22,9 @@ public class Config
 
     static void setDebug(int d){
         debug = d;
+    }
+    
+    static void setWindow(int w){
+		windowSize = w;
     }
 }
