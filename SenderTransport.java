@@ -10,8 +10,9 @@ public class SenderTransport
     private Timeline tl;
     private int n; //used for window size 
     private boolean usingTCP;
-    private int seqNum = 0;
-    private int ackNum = 0;
+    private int seqNum;
+    private int ackNum;
+    private int expectedAck;
 
     public SenderTransport(NetworkLayer nl){
         this.nl=nl;
@@ -22,18 +23,23 @@ public class SenderTransport
     public void initialize()
     {
         //Set timeline used to the timeline located in the network Layer being accessed
-        setTimeLine(nl.tl); 
+        setTimeLine(nl.tl);
+        seqNum = 0;
+        ackNum = 0;
+        expectedAck = 0;
     }
 
     public void sendMessage(Message msg)
     {
-        if(Config.debug > 0){
+        if(NetworkSimulator.DEBUG > 0){
             System.out.println("  Sender transport is now sending message w/ text: " + msg.getMessage());
         }
         if(usingTCP){
-            
+            // Using TCP
         }
         else{
+            // Using GBN
+            
             //Remember that the constructor for the packet is (message, seqnum, acknum, checksum)
             
             Packet pkt = new Packet(msg, seqNum, ackNum, 0); // Checksum needs to be implemented.
@@ -46,9 +52,11 @@ public class SenderTransport
 
     public void receiveMessage(Packet pkt)
     {
-        if(Config.debug > 0){
+        if(NetworkSimulator.DEBUG > 0){
             System.out.println("  Sender Transport is now receiving packet w/ msg text: " + pkt.getMessage().getMessage());
         }
+        
+        
     }
 
     public void timerExpired()
