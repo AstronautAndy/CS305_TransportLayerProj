@@ -1,1 +1,6 @@
 Message1
+<<<<<<< HEAD
+=======
+Message2
+Message3
+>>>>>>> 85a3da7a06671c45983484be4f6892fc036c894a

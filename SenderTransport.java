@@ -10,6 +10,8 @@ public class SenderTransport
     private Timeline tl;
     private int n; //used for window size 
     private boolean usingTCP;
+    private int seqNum = 0;
+    private int ackNum = 0;
 
     public SenderTransport(NetworkLayer nl){
         this.nl=nl;
@@ -33,8 +35,17 @@ public class SenderTransport
         }
         else{
             //Remember that the constructor for the packet is (message, seqnum, acknum, checksum)
+<<<<<<< HEAD
             Packet newPkt = new Packet(msg, 0,0,0); //Need to figure out a more appropriate checksum and ack #
             nl.sendPacket(newPkt, 0); //remember that the second parameter is "to"
+=======
+            
+            Packet pkt = new Packet(msg, seqNum, ackNum, 0); // Checksum needs to be implemented.
+            seqNum++;
+            ackNum++;
+            nl.sendPacket(pkt, 1);
+            
+>>>>>>> 85a3da7a06671c45983484be4f6892fc036c894a
         }
     }
 
