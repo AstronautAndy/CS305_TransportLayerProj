@@ -45,6 +45,7 @@ public class NetworkSimulator
         //this loop will run while there are events in the priority queue
         while(true)
         {
+            System.out.println(); //Start each iteration with a blank line
             //get next event
             currentEvent = tl.returnNextEvent();
 			
