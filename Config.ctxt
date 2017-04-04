@@ -1,9 +1,0 @@
-#BlueJ class context
-comment0.params=
-comment0.target=Config()
-comment0.text=\r\n\ Constructor\ for\ objects\ of\ class\ Config\r\n
-comment1.params=d
-comment1.target=void\ setDebug(int)
-comment2.params=w
-comment2.target=void\ setWindow(int)
-numComments=3

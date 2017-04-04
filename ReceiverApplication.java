@@ -6,7 +6,7 @@ public class ReceiverApplication
 {
     public void receiveMessage(Message msg)
     {
-        if(Config.debug > 0){
+        if(NetworkSimulator.DEBUG > 0){
             System.out.println("from receiver:" + msg.getMessage());
         }
     }

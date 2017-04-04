@@ -23,7 +23,7 @@ public class ReceiverTransport
      */
     public void receiveMessage(Packet pkt)
     {
-        if(Config.debug > 0){
+        if(NetworkSimulator.DEBUG > 0){
             System.out.println("   Receiver Transport receiving packet with message: " + pkt.getMessage().getMessage());
         }
     }
