@@ -28,6 +28,7 @@ public class NetworkSimulator
         ArrayList<String> messageArray = readFile(args[0]);
         //creating a new timeline with an average time between packets.
         Timeline tl = new Timeline(Integer.parseInt(args[1]), messageArray.size());
+        System.out.println("messagearray size: " + messageArray.size());
         //creating a new network layer with specific loss and curroption probability.
         NetworkLayer nl = new NetworkLayer(Float.parseFloat(args[2]),Float.parseFloat(args[3]),tl);
         SenderApplication sa = new SenderApplication(messageArray,nl);
