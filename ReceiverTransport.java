@@ -26,6 +26,17 @@ public class ReceiverTransport
         if(NetworkSimulator.DEBUG > 0){
             System.out.println("   Receiver Transport receiving packet with message: " + pkt.getMessage().getMessage());
         }
+        
+        // Check for corruption.
+        
+        
+        // Send packet with ack back to the sender.
+        
+        
+        // Send message to receiver application.
+        
+        
+        
     }
 
     public void setProtocol(int n)
