@@ -45,7 +45,9 @@ public class SenderTransport
         
         //Remember that the constructor for the packet is (message, seqnum, acknum, checksum)
         // Create the packet with appropriate parameters.
-        Packet pkt = new Packet(msg, seqNum, ackNum, 0); // Checksum needs to be implemented.
+        Packet pkt = new Packet(msg, seqNum, ackNum, 0);
+        // Set the checksum before sending the packet.
+        pkt.setChecksum();
         // Add the packet to the buffer in case of loss.
         transBuffer.add(pkt);
         seqNum++;
@@ -75,9 +77,9 @@ public class SenderTransport
         
         // Verify integrity of the data.
         if (pkt.isCorrupt()) {
-            System.out.println(" Packet received was corrupted.");
+            System.out.println(" Packet received from receiver was corrupted.");
         } else {
-            System.out.println(" Packet received was not corrupted.");
+            System.out.println(" Packet received from receiver was not corrupted.");
         }
     }
 

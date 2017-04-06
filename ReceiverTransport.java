@@ -31,14 +31,18 @@ public class ReceiverTransport
             System.out.println("   Receiver Transport receiving packet with message: " + pkt.getMessage().getMessage());
         }
         
-        // Check for corruption.
-        
-        
         // Send message to receiver application.
         ra.receiveMessage(pkt.getMessage());
         
         // Send packet with ack back to the sender.
-        Packet ackPkt = new Packet(pkt.getMessage(), pkt.getSeqnum(), pkt.getAcknum(), 0); // Checksum needs to be implemented.
+        Packet ackPkt = new Packet(pkt.getMessage(), pkt.getSeqnum(), pkt.getAcknum(), 0);
+        // Check for corruption.
+        if (pkt.isCorrupt()) {
+            System.out.println(" Packet received from sender was corrupted.");
+        } else {
+            System.out.println(" Packet received from sender was not corrupted.");
+            ackPkt.setChecksum();
+        }
         seqNum++;
         ackNum++;
         nl.sendPacket(ackPkt, 0);
