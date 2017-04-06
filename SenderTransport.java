@@ -13,7 +13,7 @@ public class SenderTransport
     private int seqNum;
     private int ackNum;
     private int expectedAck;
-    private boolean timerExpired;
+    ArrayList<Packet> transBuffer;
 
     public SenderTransport(NetworkLayer nl){
         this.nl=nl;
@@ -28,7 +28,7 @@ public class SenderTransport
         seqNum = 0;
         ackNum = 0;
         expectedAck = 0;
-        timerExpired = false;
+        transBuffer = new ArrayList<Packet>();
     }
 
     public void sendMessage(Message msg)
@@ -43,18 +43,16 @@ public class SenderTransport
             // Using GBN            
         }
         
-        if (timerExpired) {
-            // Timer expired so handle retransmission.
-            
-        } else {
-            //Remember that the constructor for the packet is (message, seqnum, acknum, checksum)    
-            Packet pkt = new Packet(msg, seqNum, ackNum, 0); // Checksum needs to be implemented.
-            seqNum++;
-            ackNum++;
-            // Begin timer if it isn't already on.
-            tl.startTimer(10);
-            nl.sendPacket(pkt, 1);
-        }
+        //Remember that the constructor for the packet is (message, seqnum, acknum, checksum)
+        // Create the packet with appropriate parameters.
+        Packet pkt = new Packet(msg, seqNum, ackNum, 0); // Checksum needs to be implemented.
+        // Add the packet to the buffer in case of loss.
+        transBuffer.add(pkt);
+        seqNum++;
+        ackNum++;
+        // Begin timer if it isn't already on.
+        tl.startTimer(10);
+        nl.sendPacket(pkt, 1);
     }
 
     public void receiveMessage(Packet pkt)
@@ -66,6 +64,8 @@ public class SenderTransport
         // Check to make sure the expected packet is what we received.
         if (pkt.getAcknum() == expectedAck) {
             System.out.println(" Received expected packet.");
+            // Remove packet from buffer.
+            transBuffer.remove(0);
             // Kill the timer if we receive an ack for the expected packet.
             tl.stopTimer();
             expectedAck++;
@@ -83,7 +83,11 @@ public class SenderTransport
 
     public void timerExpired()
     { 
-        timerExpired = true;
+        // Timer expired so handle retransmission.
+        // Restart timer.
+        tl.startTimer(10);
+        // Resend the first packet from the buffer.
+        nl.sendPacket(transBuffer.get(0), 1);
     }
 
     public void setTimeLine(Timeline tl)
