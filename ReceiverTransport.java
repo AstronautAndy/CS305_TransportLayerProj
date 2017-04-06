@@ -7,6 +7,8 @@ public class ReceiverTransport
     private ReceiverApplication ra;
     private NetworkLayer nl;
     private boolean usingTCP;
+    private int seqNum;
+    private int ackNum;
 
     public ReceiverTransport(NetworkLayer nl){
         ra = new ReceiverApplication();
@@ -16,6 +18,8 @@ public class ReceiverTransport
 
     public void initialize()
     {
+        seqNum = 0;
+        ackNum = 0;
     }
     
     /*
@@ -30,11 +34,14 @@ public class ReceiverTransport
         // Check for corruption.
         
         
-        // Send packet with ack back to the sender.
-        
-        
         // Send message to receiver application.
+        ra.receiveMessage(pkt.getMessage());
         
+        // Send packet with ack back to the sender.
+        Packet ackPkt = new Packet(pkt.getMessage(), pkt.getSeqnum(), pkt.getAcknum(), 0); // Checksum needs to be implemented.
+        seqNum++;
+        ackNum++;
+        nl.sendPacket(ackPkt, 0);
         
         
     }

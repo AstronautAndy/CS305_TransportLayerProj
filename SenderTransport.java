@@ -51,7 +51,7 @@ public class SenderTransport
         seqNum++;
         ackNum++;
         // Begin timer if it isn't already on.
-        tl.startTimer(10);
+        tl.startTimer(60);
         nl.sendPacket(pkt, 1);
     }
 
@@ -85,7 +85,7 @@ public class SenderTransport
     { 
         // Timer expired so handle retransmission.
         // Restart timer.
-        tl.startTimer(10);
+        tl.startTimer(60);
         // Resend the first packet from the buffer.
         nl.sendPacket(transBuffer.get(0), 1);
     }
