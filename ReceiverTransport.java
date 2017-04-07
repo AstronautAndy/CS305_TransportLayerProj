@@ -7,6 +7,8 @@ public class ReceiverTransport
     private ReceiverApplication ra;
     private NetworkLayer nl;
     private boolean usingTCP;
+    private int seqNum;
+    private int ackNum;
 
     public ReceiverTransport(NetworkLayer nl){
         ra = new ReceiverApplication();
@@ -16,6 +18,8 @@ public class ReceiverTransport
 
     public void initialize()
     {
+        seqNum = 0;
+        ackNum = 0;
     }
     
     /*
@@ -27,14 +31,21 @@ public class ReceiverTransport
             System.out.println("   Receiver Transport receiving packet with message: " + pkt.getMessage().getMessage());
         }
         
-        // Check for corruption.
-        
+        // Send message to receiver application.
+        ra.receiveMessage(pkt.getMessage());
         
         // Send packet with ack back to the sender.
-        
-        
-        // Send message to receiver application.
-        
+        Packet ackPkt = new Packet(pkt.getMessage(), pkt.getSeqnum(), pkt.getAcknum(), 0);
+        // Check for corruption.
+        if (pkt.isCorrupt()) {
+            System.out.println(" Packet received from sender was corrupted.");
+        } else {
+            System.out.println(" Packet received from sender was not corrupted.");
+            ackPkt.setChecksum();
+        }
+        seqNum++;
+        ackNum++;
+        nl.sendPacket(ackPkt, 0);
         
         
     }

@@ -102,8 +102,13 @@ objectbench.height=76
 objectbench.width=879
 package.editor.height=560
 package.editor.width=781
+<<<<<<< HEAD
 package.editor.x=-6
 package.editor.y=11
+=======
+package.editor.x=687
+package.editor.y=103
+>>>>>>> 6550dd3271edf5cab8c336e89f26cc6bbba049e9
 package.numDependencies=33
 package.numTargets=10
 package.showExtends=true
@@ -115,8 +120,8 @@ readme.editor.x=0
 readme.editor.y=0
 target1.editor.height=700
 target1.editor.width=900
-target1.editor.x=347
-target1.editor.y=71
+target1.editor.x=594
+target1.editor.y=104
 target1.height=50
 target1.name=Packet
 target1.naviview.expanded=false
@@ -125,7 +130,11 @@ target1.type=ClassTarget
 target1.typeParameters=
 target1.width=80
 target1.x=550
+<<<<<<< HEAD
 target1.y=430
+=======
+target1.y=460
+>>>>>>> 6550dd3271edf5cab8c336e89f26cc6bbba049e9
 target10.editor.height=700
 target10.editor.width=900
 target10.editor.x=0
@@ -138,11 +147,15 @@ target10.type=ClassTarget
 target10.typeParameters=
 target10.width=140
 target10.x=440
+<<<<<<< HEAD
 target10.y=270
+=======
+target10.y=300
+>>>>>>> 6550dd3271edf5cab8c336e89f26cc6bbba049e9
 target2.editor.height=700
 target2.editor.width=900
-target2.editor.x=313
-target2.editor.y=15
+target2.editor.x=-4
+target2.editor.y=0
 target2.height=50
 target2.name=ReceiverApplication
 target2.naviview.expanded=false
@@ -153,9 +166,9 @@ target2.width=150
 target2.x=620
 target2.y=270
 target3.editor.height=638
-target3.editor.width=1059
-target3.editor.x=257
-target3.editor.y=100
+target3.editor.width=1453
+target3.editor.x=285
+target3.editor.y=153
 target3.height=50
 target3.name=Timeline
 target3.naviview.expanded=true
@@ -177,11 +190,19 @@ target4.type=ClassTarget
 target4.typeParameters=
 target4.width=80
 target4.x=380
+<<<<<<< HEAD
 target4.y=430
 target5.editor.height=626
 target5.editor.width=857
 target5.editor.x=10
 target5.editor.y=73
+=======
+target4.y=460
+target5.editor.height=780
+target5.editor.width=1118
+target5.editor.x=770
+target5.editor.y=220
+>>>>>>> 6550dd3271edf5cab8c336e89f26cc6bbba049e9
 target5.height=50
 target5.name=NetworkSimulator
 target5.naviview.expanded=true
@@ -203,11 +224,19 @@ target6.type=ClassTarget
 target6.typeParameters=
 target6.width=80
 target6.x=40
+<<<<<<< HEAD
 target6.y=340
 target7.editor.height=735
 target7.editor.width=762
 target7.editor.x=606
 target7.editor.y=0
+=======
+target6.y=370
+target7.editor.height=818
+target7.editor.width=1032
+target7.editor.x=682
+target7.editor.y=12
+>>>>>>> 6550dd3271edf5cab8c336e89f26cc6bbba049e9
 target7.height=50
 target7.name=NetworkLayer
 target7.naviview.expanded=true
@@ -216,11 +245,19 @@ target7.type=ClassTarget
 target7.typeParameters=
 target7.width=110
 target7.x=270
+<<<<<<< HEAD
 target7.y=230
 target8.editor.height=711
 target8.editor.width=849
 target8.editor.x=529
 target8.editor.y=6
+=======
+target7.y=260
+target8.editor.height=848
+target8.editor.width=1128
+target8.editor.x=50
+target8.editor.y=24
+>>>>>>> 6550dd3271edf5cab8c336e89f26cc6bbba049e9
 target8.height=50
 target8.name=SenderTransport
 target8.naviview.expanded=false
@@ -229,11 +266,19 @@ target8.type=ClassTarget
 target8.typeParameters=
 target8.width=130
 target8.x=440
+<<<<<<< HEAD
 target8.y=190
 target9.editor.height=744
 target9.editor.width=1378
 target9.editor.x=-15
 target9.editor.y=2
+=======
+target8.y=220
+target9.editor.height=744
+target9.editor.width=1378
+target9.editor.x=432
+target9.editor.y=211
+>>>>>>> 6550dd3271edf5cab8c336e89f26cc6bbba049e9
 target9.height=50
 target9.name=ReceiverTransport
 target9.naviview.expanded=false
@@ -242,4 +287,8 @@ target9.type=ClassTarget
 target9.typeParameters=
 target9.width=140
 target9.x=620
+<<<<<<< HEAD
 target9.y=190
+=======
+target9.y=220
+>>>>>>> 6550dd3271edf5cab8c336e89f26cc6bbba049e9

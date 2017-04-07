@@ -39,11 +39,29 @@ public class Packet
     
     public void setChecksum()
     {
+        // Add seq plus ack to begin.
+        checksum = seqnum + acknum;
+        // Add each character in the message to complete the checksum.
+        for (int i = 0; i < msg.getMessage().length(); i++) {
+            checksum += msg.getMessage().charAt(i);
+        }
     }
     
     public boolean isCorrupt()
     {
-        return false;
+        // Same method of computing the checksum as setChecksum this will just store it in a temp int.
+        int tempChecksum = seqnum + acknum;
+        for (int i = 0; i < msg.getMessage().length(); i++) {
+            tempChecksum += msg.getMessage().charAt(i);
+        }
+        // Compare the checksum of the current data with the checksum calculated at the beginning.
+        if (checksum == tempChecksum) {
+            // Equal. No data was corrupted.
+            return false;
+        } else {
+            // Not equal. Some data was corrupted.
+            return true;
+        }
     }
     
     /**
