@@ -13,6 +13,7 @@ public class SenderTransport
     private int seqNum;
     private int ackNum;
     private int expectedAck;
+    private boolean timerExpired;
 
     public SenderTransport(NetworkLayer nl){
         this.nl=nl;
@@ -27,6 +28,7 @@ public class SenderTransport
         seqNum = 0;
         ackNum = 0;
         expectedAck = 0;
+        timerExpired = false;
     }
 
     public void sendMessage(Message msg)
@@ -41,17 +43,22 @@ public class SenderTransport
             // Using GBN
             
             //Remember that the constructor for the packet is (message, seqnum, acknum, checksum)
-<<<<<<< HEAD
             Packet newPkt = new Packet(msg, 0,0,0); //Need to figure out a more appropriate checksum and ack #
             nl.sendPacket(newPkt, 0); //remember that the second parameter is "to"
-=======
+            // Using GBN            
+        }
+        
+        if (timerExpired) {
+            // Timer expired so handle retransmission.
             
+        } else {
+            //Remember that the constructor for the packet is (message, seqnum, acknum, checksum)    
             Packet pkt = new Packet(msg, seqNum, ackNum, 0); // Checksum needs to be implemented.
             seqNum++;
             ackNum++;
+            // Begin timer if it isn't already on.
+            tl.startTimer(10);
             nl.sendPacket(pkt, 1);
-            
->>>>>>> 85a3da7a06671c45983484be4f6892fc036c894a
         }
     }
 
@@ -61,11 +68,27 @@ public class SenderTransport
             System.out.println("  Sender Transport is now receiving packet w/ msg text: " + pkt.getMessage().getMessage());
         }
         
+        // Check to make sure the expected packet is what we received.
+        if (pkt.getAcknum() == expectedAck) {
+            System.out.println(" Received expected packet.");
+            // Kill the timer if we receive an ack for the expected packet.
+            tl.stopTimer();
+            expectedAck++;
+        } else {
+            System.out.println(" Received unexpected packet.");
+        }
         
+        // Verify integrity of the data.
+        if (pkt.isCorrupt()) {
+            System.out.println(" Packet received was corrupted.");
+        } else {
+            System.out.println(" Packet received was not corrupted.");
+        }
     }
 
     public void timerExpired()
     { 
+        timerExpired = true;
     }
 
     public void setTimeLine(Timeline tl)
