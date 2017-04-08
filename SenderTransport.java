@@ -51,7 +51,7 @@ public class SenderTransport
         
         // Making sure we are within window size
         int range = expectedAck + n;
-        System.out.println("base + n " + range);
+        System.out.println("expectedAck + n " + range);
         if(seqNum < expectedAck + n){
             System.out.println("Current index: " + seqNum);
             
