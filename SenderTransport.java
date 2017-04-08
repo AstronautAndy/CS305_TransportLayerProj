@@ -40,17 +40,9 @@ public class SenderTransport
         if(NetworkSimulator.DEBUG > 0){
             System.out.println("  Sender transport is now sending message w/ text: " + msg.getMessage());
         }
-        if(usingTCP){
-            // Using TCP
-        }
-        else{
-            // Using GBNj
-            
-            //Remember that the constructor for the packet is (message, seqnum, acknum, checksum)
-            Packet newPkt = new Packet(msg, seqNum,ackNum,0); //Need to figure out a more appropriate checksum and ack #
-            nl.sendPacket(newPkt, 0); //remember that the second parameter is "to"
-            // Using GBN            
-        }
+        
+        //Remember that the constructor for the packet is (message, seqnum, acknum, checksum)
+        Packet newPkt = new Packet(msg, seqNum,ackNum,0); //Need to figure out a more appropriate checksum and ack #
         
         //Remember that the constructor for the packet is (message, seqnum, acknum, checksum)
         // Create the packet with appropriate parameters.
@@ -60,6 +52,7 @@ public class SenderTransport
         }
         // Set the checksum before sending the packet.
         pkt.setChecksum();
+        nl.sendPacket(newPkt, 0); //remember that the second parameter is "to"
         // Add the packet to the buffer in case of loss.
         transBuffer.add(pkt);
         //Update all values
@@ -71,7 +64,10 @@ public class SenderTransport
         tl.startTimer(60);
         nl.sendPacket(pkt, 1);
     }
-
+    
+    /**
+     * When the GBN protocol receives an ACK message, it should be either for the base or for some base < n 
+     */
     public void receiveMessage(Packet pkt)
     {
         if(NetworkSimulator.DEBUG > 0){
@@ -112,6 +108,11 @@ public class SenderTransport
     { 
         // Timer expired so handle retransmission.
         // Restart timer.
+        if(usingTCP){
+            //TCP resends only the packet (identified by sequence #) that has gone without a received ACK
+        }else{ //Using GBN
+            //GBN resend all packets
+        }
         tl.startTimer(60);
         // Resend the first packet from the buffer.
         nl.sendPacket(transBuffer.get(0), 1);

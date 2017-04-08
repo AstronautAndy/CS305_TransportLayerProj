@@ -24,6 +24,8 @@ public class ReceiverTransport
     
     /*
      * This function is used to receive pkts from the sending side of the application. Does "stuff" with the 
+     * If the GBN protocol recives n packets that have seq numbers greater than the most recently ack'd port, then send n packets through the most recently ack's port
+     * TCP simply needs to send acks to packets as it receives them
      */
     public void receiveMessage(Packet pkt)
     {

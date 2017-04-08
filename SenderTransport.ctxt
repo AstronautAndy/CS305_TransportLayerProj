@@ -7,6 +7,7 @@ comment2.params=msg
 comment2.target=void\ sendMessage(Message)
 comment3.params=pkt
 comment3.target=void\ receiveMessage(Packet)
+comment3.text=\r\n\ When\ the\ GBN\ protocol\ receives\ an\ ACK\ message,\ it\ should\ be\ either\ for\ the\ base\ or\ for\ some\ base\ <\ n\ \r\n
 comment4.params=
 comment4.target=void\ timerExpired()
 comment5.params=i
