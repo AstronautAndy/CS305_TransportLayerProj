@@ -9,6 +9,7 @@ public class ReceiverTransport
     private boolean usingTCP;
     private int seqNum;
     private int ackNum;
+    private int mostRecentAck; //Used to denote the seq number of the most recently ack'd
 
     public ReceiverTransport(NetworkLayer nl){
         ra = new ReceiverApplication();
@@ -20,6 +21,7 @@ public class ReceiverTransport
     {
         seqNum = 0;
         ackNum = 0;
+        mostRecentAck = 0;
     }
     
     /*
@@ -30,14 +32,40 @@ public class ReceiverTransport
     public void receiveMessage(Packet pkt)
     {
         if(NetworkSimulator.DEBUG > 0){
-            System.out.println("   Receiver Transport receiving packet with message: " + pkt.getMessage().getMessage());
-        }
-        
+            System.out.println("   Receiver Transport receiving packet with message: " + pkt.getMessage().getMessage() + " and seqNum: " +  pkt.getSeqnum());
+        }        
+        System.out.println("   Receiver Transport receiving packet with message: " + pkt.getMessage().getMessage() + " and seqNum: " +  pkt.getSeqnum());
+        System.out.println("Most Recent Ack: " + mostRecentAck);
         // Send message to receiver application.
         ra.receiveMessage(pkt.getMessage());
+        //Packet ackPkt = new Packet(pkt.getMessage(), pkt.getSeqnum(), pkt.getAcknum(), 0); //Default code is to create a standard ack packet
+        Packet ackPkt;
+        //This block of code is used to change how the program responds to an out of order packet from the sender
+        if(usingTCP){
+            
+            if(mostRecentAck+1 != pkt.getSeqnum() ){ //If we receive an out of order packet from the sender
+                
+            }else{//Otherwise, we receive an in order packet
+                
+            }
+            ackPkt = new Packet(pkt.getMessage(), pkt.getSeqnum(), pkt.getAcknum(), 0);
+        }else{ //Using GBN
+            //Specific case for the start of the program
+            if(mostRecentAck == 0 && pkt.getSeqnum() != 0){
+                System.out.println("Out of order packet - zero case");
+                ackPkt = new Packet(pkt.getMessage(), mostRecentAck, mostRecentAck, 0);
+                
+            }
+            //General case
+            else if(mostRecentAck+1 != pkt.getSeqnum() && mostRecentAck != 0){ //If we receive an out of order packet from the sender
+                System.out.println("Out of order packet");
+                ackPkt = new Packet(pkt.getMessage(), mostRecentAck, mostRecentAck, 0);
+            }else{ //Otherwise, we receive an in order packet
+                ackPkt = new Packet(pkt.getMessage(), pkt.getSeqnum(), pkt.getAcknum(), 0); //Default case
+                mostRecentAck++; 
+            }
+        }
         
-        // Send packet with ack back to the sender.
-        Packet ackPkt = new Packet(pkt.getMessage(), pkt.getSeqnum(), pkt.getAcknum(), 0);
         // Check for corruption.
         if (pkt.isCorrupt()) {
             System.out.println(" Packet received from sender was corrupted.");
@@ -45,10 +73,14 @@ public class ReceiverTransport
             System.out.println(" Packet received from sender was not corrupted.");
             ackPkt.setChecksum();
         }
+        
+        //These two don't seem to do anything at the moment
         seqNum++;
         ackNum++;
+        // Send packet with ack back to the sender.
+        System.out.println("Receiver Sending ack packet with ack: " + ackPkt.getAcknum());
+        mostRecentAck = ackPkt.getAcknum();
         nl.sendPacket(ackPkt, 0);
-        
         
     }
 
