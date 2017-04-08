@@ -39,7 +39,7 @@ public class ReceiverTransport
         // Check for corruption.
         if (pkt.isCorrupt()) {
             System.out.println(" Packet received from sender was corrupted.");
-        } else {
+        } else { //Not corrupt
             System.out.println(" Packet received from sender was not corrupted.");
             ackPkt.setChecksum();
         }

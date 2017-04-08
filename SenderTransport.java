@@ -8,6 +8,8 @@ public class SenderTransport
 {
     private NetworkLayer nl;
     private Timeline tl;
+    int base;
+    int current;
     private int n; //used for window size 
     private boolean usingTCP;
     private int seqNum;
@@ -40,7 +42,7 @@ public class SenderTransport
             // Using TCP
         }
         else{
-            // Using GBN
+            // Using GBNj
             
             //Remember that the constructor for the packet is (message, seqnum, acknum, checksum)
             Packet newPkt = new Packet(msg, 0,0,0); //Need to figure out a more appropriate checksum and ack #
@@ -76,6 +78,12 @@ public class SenderTransport
             // Kill the timer if we receive an ack for the expected packet.
             tl.stopTimer();
             expectedAck++;
+                if(usingTCP){
+                    
+                }else{ //Using GBN
+                    System.out.println("Current base: " + base);
+                    base++;
+                }
         } else {
             System.out.println(" Received unexpected packet.");
         }
@@ -95,6 +103,17 @@ public class SenderTransport
         tl.startTimer(60);
         // Resend the first packet from the buffer.
         nl.sendPacket(transBuffer.get(0), 1);
+    }
+    
+    public boolean checkWindow(int i){
+        int range = base + n;
+        System.out.println("base+n " + range);
+        if(i <= base+n){ //If the index of the message you want to send is greater than or equal to the base + window size
+            return true; 
+        }
+        else{
+            return false;
+        }
     }
 
     public void setTimeLine(Timeline tl)
