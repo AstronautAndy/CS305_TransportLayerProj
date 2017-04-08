@@ -33,7 +33,8 @@ public class SenderApplication
         if(NetworkSimulator.DEBUG > 0){
             System.out.println(" Sender Application sending new message");
         }
-        if(st.checkWindow(index)){ //Only send messages if the current message being sent is within the window
+        //The index <= messages.size()-1 is used to make sure that the program does not access an out of bounds index in the ArrayList
+        if(st.checkWindow(index) && index <= messages.size()-1){ //Only send messages if the current message being sent is within the window
             System.out.println("Current index: " + index);
             st.sendMessage(new Message(messages.get(index++))); //Send the next available message
         }

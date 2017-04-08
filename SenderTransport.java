@@ -55,14 +55,18 @@ public class SenderTransport
         //Remember that the constructor for the packet is (message, seqnum, acknum, checksum)
         // Create the packet with appropriate parameters.
         Packet pkt = new Packet(msg, seqNum, ackNum, 0);
+        if(NetworkSimulator.DEBUG > 2){
+            System.out.println("Packet Sent with seqNum: " + seqNum + " ackNum: " + ackNum);
+        }
         // Set the checksum before sending the packet.
         pkt.setChecksum();
         // Add the packet to the buffer in case of loss.
         transBuffer.add(pkt);
+        //Update all values
         seqNum++;
         ackNum++;
-        current++;
-        expectedAck = seqNum; //Set the expected ack number to the updated sequence number
+        current++; 
+        expectedAck = base; //Set the expected ack number to the updated base number (must be the start of the window)
         // Begin timer if it isn't already on.
         tl.startTimer(60);
         nl.sendPacket(pkt, 1);
@@ -75,7 +79,10 @@ public class SenderTransport
         }
         
         // Check to make sure the expected packet is what we received.
-        if (pkt.getAcknum() == expectedAck) {
+        if (pkt.getAcknum() == expectedAck || pkt.getAcknum() > expectedAck) {
+            //If you;ve received an out of order ack
+            if(pkt.getAcknum() > expectedAck){ expectedAck = pkt.getAcknum()+1; base = expectedAck; } //If you receive an ack message out of order, update the base
+            
             System.out.println(" Received expected packet.");
             // Remove packet from buffer.
             transBuffer.remove(0);

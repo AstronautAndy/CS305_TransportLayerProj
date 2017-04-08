@@ -18,6 +18,8 @@ public class SenderApplicationTest
     ArrayList<String> testMessages;
     NetworkLayer nl;
     SenderApplication sa;
+    Packet ack;
+    Message a;
     /**
      * Default constructor for test class SenderApplicationTest
      */
@@ -62,8 +64,11 @@ public class SenderApplicationTest
      */
     @Test
     public void testCheckWindow(){
-       for(int i=0; i< 5; i++){     
+       a = new Message("ACK");
+       for(int i=0; i< 5; i++){
+           ack = new Packet(a,i,i+1,0);
            sa.sendMessage();
+           sa.getSenderTransport().receiveMessage(ack);
        }
     }
 }
