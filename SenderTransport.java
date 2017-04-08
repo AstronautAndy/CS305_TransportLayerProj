@@ -27,6 +27,8 @@ public class SenderTransport
     {
         //Set timeline used to the timeline located in the network Layer being accessed
         setTimeLine(nl.tl);
+        base=0;
+        current=0;
         seqNum = 0;
         ackNum = 0;
         expectedAck = 0;
@@ -45,7 +47,7 @@ public class SenderTransport
             // Using GBNj
             
             //Remember that the constructor for the packet is (message, seqnum, acknum, checksum)
-            Packet newPkt = new Packet(msg, 0,0,0); //Need to figure out a more appropriate checksum and ack #
+            Packet newPkt = new Packet(msg, seqNum,ackNum,0); //Need to figure out a more appropriate checksum and ack #
             nl.sendPacket(newPkt, 0); //remember that the second parameter is "to"
             // Using GBN            
         }
@@ -59,6 +61,8 @@ public class SenderTransport
         transBuffer.add(pkt);
         seqNum++;
         ackNum++;
+        current++;
+        expectedAck = seqNum; //Set the expected ack number to the updated sequence number
         // Begin timer if it isn't already on.
         tl.startTimer(60);
         nl.sendPacket(pkt, 1);

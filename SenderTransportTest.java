@@ -7,21 +7,24 @@ import org.junit.Test;
 import java.util.*;
 
 /**
- * The test class SenderApplicationTest.
+ * The test class SenderTransportTest.
  *
  * @author  (your name)
  * @version (a version number or a date)
  */
-public class SenderApplicationTest
+public class SenderTransportTest
 {
     Timeline tl;
     ArrayList<String> testMessages;
     NetworkLayer nl;
-    SenderApplication sa;
+    SenderTransport st;
+    ReceiverTransport rt;
+    Message m; 
+    Packet ack;
     /**
-     * Default constructor for test class SenderApplicationTest
+     * Default constructor for test class SenderTransportTest
      */
-    public SenderApplicationTest()
+    public SenderTransportTest()
     {
     }
 
@@ -34,17 +37,20 @@ public class SenderApplicationTest
     public void setUp()
     {
         float lp = (float) 0.1; float cp = (float) 0.1;
-        
         testMessages = new ArrayList<String>();
         testMessages.add("One");
         testMessages.add("Two");
         testMessages.add("Three");
         testMessages.add("Four");
+        m = new Message("test");
         tl = new Timeline(0,testMessages.size()); //Create a test timeline with time of 0 and 5 messages to work with
         nl = new NetworkLayer(lp,cp,tl);
-        sa = new SenderApplication(testMessages, nl);
-        sa.getSenderTransport().setWindowSize(3); //Set the window size to a test value
-        sa.getSenderTransport().setProtocol(0); //Set to GBN (For now)
+        //rt = new ReceiverTransport(nl);
+        st = new SenderTransport(nl);
+        st.setProtocol(0); //Start with GBN
+        st.setTimeLine(tl);
+        st.setWindowSize(3);
+        
     }
 
     /**
@@ -58,12 +64,20 @@ public class SenderApplicationTest
     }
     
     /**
-     * Idea behind this test is that the application should not send new messages upon reaching the edge of the window
+     * Send message
+     * Receive Ack
+     * Should increment base
      */
     @Test
-    public void testCheckWindow(){
-       for(int i=0; i< 5; i++){     
-           sa.sendMessage();
-       }
+    public void testBaseIncrement(){
+        ack = new Packet(m,0,1,0); //ack for the first message from the sender
+        st.sendMessage(m); //Send a message
+        st.receiveMessage(ack); //Receive the ack message. Should increment the base
+        st.sendMessage(m); //Send m again. Check the base number
+    }
+    
+    @Test
+    public void testWindowUpdate(){
+        
     }
 }
