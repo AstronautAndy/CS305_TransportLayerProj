@@ -38,6 +38,11 @@ public class SenderApplication
             System.out.println("Current index: " + index);
             st.sendMessage(new Message(messages.get(index++))); //Send the next available message
         }
+        else{
+            if(NetworkSimulator.DEBUG > 0){
+                System.out.println("Unable to send a message due to window size constraint");
+            }
+        }
     }
     
 

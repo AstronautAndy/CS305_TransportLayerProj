@@ -76,11 +76,12 @@ public class SenderTransport
     {
         if(NetworkSimulator.DEBUG > 0){
             System.out.println("  Sender Transport is now receiving packet w/ msg text: " + pkt.getMessage().getMessage());
+            System.out.println("  Sender Transport is Expecting ACK: " + expectedAck);
         }
         
         // Check to make sure the expected packet is what we received.
         if (pkt.getAcknum() == expectedAck || pkt.getAcknum() > expectedAck) {
-            //If you;ve received an out of order ack
+            //If you;ve received an out of order ack, do the following:
             if(pkt.getAcknum() > expectedAck){ expectedAck = pkt.getAcknum()+1; base = expectedAck; } //If you receive an ack message out of order, update the base
             
             System.out.println(" Received expected packet.");
