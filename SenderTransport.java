@@ -16,6 +16,7 @@ public class SenderTransport
     private int ackNum;
     private int expectedAck;
     ArrayList<Packet> transBuffer;
+    ArrayList<Packet> windowBuffer;
 
     public SenderTransport(NetworkLayer nl){
         this.nl=nl;
@@ -33,6 +34,7 @@ public class SenderTransport
         ackNum = 0;
         expectedAck = 0;
         transBuffer = new ArrayList<Packet>();
+        windowBuffer = new ArrayList<Packet>();
     }
 
     public void sendMessage(Message msg)
@@ -41,28 +43,38 @@ public class SenderTransport
             System.out.println("  Sender transport is now sending message w/ text: " + msg.getMessage());
         }
         
-        //Remember that the constructor for the packet is (message, seqnum, acknum, checksum)
-        Packet newPkt = new Packet(msg, seqNum,ackNum,0); //Need to figure out a more appropriate checksum and ack #
-        
-        //Remember that the constructor for the packet is (message, seqnum, acknum, checksum)
+        // Remember that the constructor for the packet is (message, seqnum, acknum, checksum)
         // Create the packet with appropriate parameters.
         Packet pkt = new Packet(msg, seqNum, ackNum, 0);
-        if(NetworkSimulator.DEBUG > 2){
-            System.out.println("Packet Sent with seqNum: " + seqNum + " ackNum: " + ackNum);
-        }
         // Set the checksum before sending the packet.
         pkt.setChecksum();
-        nl.sendPacket(newPkt, 0); //remember that the second parameter is "to"
-        // Add the packet to the buffer in case of loss.
-        transBuffer.add(pkt);
-        //Update all values
-        seqNum++;
-        ackNum++;
-        current++; 
-        expectedAck = base; //Set the expected ack number to the updated base number (must be the start of the window)
-        // Begin timer if it isn't already on.
-        tl.startTimer(60);
-        nl.sendPacket(pkt, 1);
+        
+        // Making sure we are within window size
+        int range = expectedAck + n;
+        System.out.println("base + n " + range);
+        if(seqNum < expectedAck + n){
+            System.out.println("Current index: " + seqNum);
+            
+            // Within window so can send packet
+            
+            // Add the packet to the buffer in case of loss.
+            transBuffer.add(pkt);
+            //Update all values
+            seqNum++;
+            ackNum++;
+            current++;
+            if(NetworkSimulator.DEBUG > 2){
+                System.out.println("Packet Sent with seqNum: " + seqNum + " ackNum: " + ackNum);
+            }
+            // Begin timer if it isn't already on.
+            tl.startTimer(60);
+            nl.sendPacket(pkt, 1);
+        }
+        else{
+            if(NetworkSimulator.DEBUG > 0){
+                System.out.println("Unable to send a message due to window size constraint");
+            }
+        }
     }
     
     /**
@@ -77,21 +89,23 @@ public class SenderTransport
         
         // Check to make sure the expected packet is what we received.
         if (pkt.getAcknum() == expectedAck || pkt.getAcknum() > expectedAck) {
-            //If you;ve received an out of order ack, do the following:
-            if(pkt.getAcknum() > expectedAck){ expectedAck = pkt.getAcknum()+1; base = expectedAck; } //If you receive an ack message out of order, update the base
+            //If you've received an out of order ack, do the following:
+            if(pkt.getAcknum() > expectedAck){
+                //If you receive an ack message out of order, update the expected ack number
+                expectedAck = pkt.getAcknum();
+            }
             
             System.out.println(" Received expected packet.");
             // Remove packet from buffer.
             transBuffer.remove(0);
             // Kill the timer if we receive an ack for the expected packet.
             tl.stopTimer();
-            expectedAck++;
-                if(usingTCP){
-                    
-                }else{ //Using GBN
-                    System.out.println("Current base: " + base);
-                    base++;
-                }
+            if(usingTCP){
+                
+            }else{ //Using GBN
+                System.out.println("Current expected ack: " + expectedAck);
+                expectedAck++;
+            }
         } else {
             System.out.println(" Received unexpected packet.");
         }
@@ -116,17 +130,6 @@ public class SenderTransport
         tl.startTimer(60);
         // Resend the first packet from the buffer.
         nl.sendPacket(transBuffer.get(0), 1);
-    }
-    
-    public boolean checkWindow(int i){
-        int range = base + n;
-        System.out.println("base+n " + range);
-        if(i <= base+n){ //If the index of the message you want to send is greater than or equal to the base + window size
-            return true; 
-        }
-        else{
-            return false;
-        }
     }
 
     public void setTimeLine(Timeline tl)
