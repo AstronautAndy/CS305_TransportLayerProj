@@ -88,6 +88,7 @@ public class SenderTransport
         }
         
         // Check to make sure the expected packet is what we received.
+        //Check with Mike to see if this is correct
         if (pkt.getAcknum() == expectedAck || pkt.getAcknum() > expectedAck) {
             //If you've received an out of order ack, do the following:
             if(pkt.getAcknum() > expectedAck){
@@ -126,6 +127,9 @@ public class SenderTransport
             //TCP resends only the packet (identified by sequence #) that has gone without a received ACK
         }else{ //Using GBN
             //GBN resend all packets
+            for(int i =expectedAck; i<expectedAck+n-1; i++){
+                
+            }
         }
         tl.startTimer(60);
         // Resend the first packet from the buffer.

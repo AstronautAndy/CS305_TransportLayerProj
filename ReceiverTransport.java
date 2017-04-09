@@ -76,8 +76,9 @@ public class ReceiverTransport
         seqNum++;
         ackNum++;
         // Send packet with ack back to the sender.
-        System.out.println("Receiver Sending ack packet with ack: " + ackPkt.getAcknum());
-        mostRecentAck = ackPkt.getAcknum();
+        if(NetworkSimulator.DEBUG > 0){
+            System.out.println("Receiver Sending ack packet with ack: " + ackPkt.getAcknum());
+        }
         nl.sendPacket(ackPkt, 0);
         
     }
