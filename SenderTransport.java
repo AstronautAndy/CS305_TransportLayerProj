@@ -96,6 +96,7 @@ public class SenderTransport
         }
         
         // Check to make sure the expected packet is what we received.
+        //Check with Mike to see if this is correct
         if (pkt.getAcknum() == expectedAck || pkt.getAcknum() > expectedAck) {
             
             if(pkt.getAcknum() > expectedAck){
@@ -163,9 +164,14 @@ public class SenderTransport
             //TCP resends only the packet (identified by sequence #) that has gone without a received ACK
         }else{ //Using GBN
             //GBN resend all packets
+<<<<<<< HEAD
             for (int i = 0; i < windowBuffer.size(); i++) {
                 tl.startTimer(60);
                 nl.sendPacket(windowBuffer.get(i), 1);
+=======
+            for(int i =expectedAck; i<expectedAck+n-1; i++){
+                
+>>>>>>> 2d63c3bdd1d48ea52043a4aa776141d1f9035b85
             }
         }
     }
