@@ -72,9 +72,6 @@ public class ReceiverTransport
             ackPkt.setChecksum();
         }
         
-        //These two don't seem to do anything at the moment
-        seqNum++;
-        ackNum++;
         // Send packet with ack back to the sender.
         if(NetworkSimulator.DEBUG > 0){
             System.out.println("Receiver Sending ack packet with ack: " + ackPkt.getAcknum());

@@ -113,6 +113,9 @@ public class SenderTransport
                 
                 // Kill the timer if we receive an ack.
                 tl.stopTimer();
+                if (windowBuffer.size() > 0) {
+                    tl.startTimer(60);
+                }
                 
             } else {
                 System.out.println(" Received expected packet.");
@@ -122,6 +125,9 @@ public class SenderTransport
                 
                 // Kill the timer if we receive an ack.
                 tl.stopTimer();
+                if (windowBuffer.size() > 0) {
+                    tl.startTimer(60);
+                }
             }
             
             if(usingTCP){
@@ -137,6 +143,7 @@ public class SenderTransport
                     // Begin timer if it isn't already on.
                     tl.startTimer(60);
                     // Sending a packet from overflow.
+                    System.out.println("  packet: " + overflowBuffer.get(0).getMessage().getMessage());
                     nl.sendPacket(overflowBuffer.get(0), 1);
                     windowBuffer.add(overflowBuffer.get(0));
                     ackCounts.add(0);
@@ -164,14 +171,10 @@ public class SenderTransport
             //TCP resends only the packet (identified by sequence #) that has gone without a received ACK
         }else{ //Using GBN
             //GBN resend all packets
-<<<<<<< HEAD
             for (int i = 0; i < windowBuffer.size(); i++) {
                 tl.startTimer(60);
+                System.out.println("  packet: " + windowBuffer.get(i).getMessage().getMessage());
                 nl.sendPacket(windowBuffer.get(i), 1);
-=======
-            for(int i =expectedAck; i<expectedAck+n-1; i++){
-                
->>>>>>> 2d63c3bdd1d48ea52043a4aa776141d1f9035b85
             }
         }
     }
