@@ -1,1 +1,1 @@
-﻿java NetworkSimulator test1.txt 5 0.2 0.0 2 0 2
+﻿java NetworkSimulator test1.txt 5 0.2 0.0 5 1 2

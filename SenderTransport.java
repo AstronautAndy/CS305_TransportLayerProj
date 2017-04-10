@@ -15,9 +15,9 @@ public class SenderTransport
     private int seqNum;
     private int ackNum;
     private int expectedAck;
+    private int dupAcks;
     ArrayList<Packet> windowBuffer;
     ArrayList<Packet> overflowBuffer;
-    ArrayList<Integer> ackCounts;
 
     public SenderTransport(NetworkLayer nl){
         this.nl=nl;
@@ -32,9 +32,9 @@ public class SenderTransport
         seqNum = 0;
         ackNum = 0;
         expectedAck = 0;
+        dupAcks = 0;
         windowBuffer = new ArrayList<Packet>();
         overflowBuffer = new ArrayList<Packet>();
-        ackCounts = new ArrayList<Integer>();
     }
 
     public void sendMessage(Message msg)
@@ -47,7 +47,7 @@ public class SenderTransport
     
         // Remember that the constructor for the packet is (message, seqnum, acknum, checksum)
         // Create the packet with appropriate parameters.
-        Packet pkt = new Packet(msg, seqNum, ackNum, 0);
+        Packet pkt = new Packet(msg, seqNum, expectedAck-1, 0);
         // Set the checksum before sending the packet.
         pkt.setChecksum();
         
@@ -60,7 +60,6 @@ public class SenderTransport
             
             // Add the packet to the buffer in case of loss.
             windowBuffer.add(pkt);
-            ackCounts.add(0);
             
             if(NetworkSimulator.DEBUG > 2){
                 System.out.println("Packet Sent with seqNum: " + seqNum + " ackNum: " + ackNum);
@@ -82,7 +81,6 @@ public class SenderTransport
         
         // Update all values
         seqNum++;
-        ackNum++;
     }
     
     /**
@@ -96,7 +94,6 @@ public class SenderTransport
         }
         
         // Check to make sure the expected packet is what we received.
-        //Check with Mike to see if this is correct
         if (pkt.getAcknum() == expectedAck || pkt.getAcknum() > expectedAck) {
             
             if(pkt.getAcknum() > expectedAck){
@@ -105,7 +102,9 @@ public class SenderTransport
                 
                 // Remove packets from buffer.
                 for (int i = expectedAck; i <= pkt.getAcknum(); i++) {
-                    windowBuffer.remove(0);
+                    if (windowBuffer.size() > 0) {
+                        windowBuffer.remove(0);
+                    }
                 }
                 
                 //If you receive an ack message out of order, update the expected ack number
@@ -130,12 +129,8 @@ public class SenderTransport
                 }
             }
             
-            if(usingTCP){
-                
-            }else{ //Using GBN
-                System.out.println("Current expected ack: " + expectedAck);
-                expectedAck++;
-            }
+            System.out.println("Current expected ack: " + expectedAck);
+            expectedAck++;
             
             // Check to see if there are packets in overflow to be sent
             for (int i = windowBuffer.size(); i < n; i++) {
@@ -146,13 +141,22 @@ public class SenderTransport
                     System.out.println("  packet: " + overflowBuffer.get(0).getMessage().getMessage());
                     nl.sendPacket(overflowBuffer.get(0), 1);
                     windowBuffer.add(overflowBuffer.get(0));
-                    ackCounts.add(0);
                     overflowBuffer.remove(0);
                 }
             }
             
+            dupAcks = 0;
+            
         } else {
-            System.out.println(" Received unexpected packet.");
+            System.out.println(" Received duplicate ack.");
+            if (usingTCP) {
+                dupAcks++;
+                if (dupAcks % 3 == 0 && dupAcks > 0) {
+                    // Fast retransmit
+                    System.out.println(" Fast retransmit.");
+                    nl.sendPacket(windowBuffer.get(0), 1);
+                }
+            } 
         }
         
         // Verify integrity of the data.
@@ -169,6 +173,9 @@ public class SenderTransport
         // Restart timer.
         if(usingTCP){
             //TCP resends only the packet (identified by sequence #) that has gone without a received ACK
+            tl.startTimer(60);
+            System.out.println("  packet: " + windowBuffer.get(0).getMessage().getMessage());
+            nl.sendPacket(windowBuffer.get(0), 1);
         }else{ //Using GBN
             //GBN resend all packets
             for (int i = 0; i < windowBuffer.size(); i++) {

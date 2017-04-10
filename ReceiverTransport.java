@@ -1,4 +1,5 @@
 
+import java.util.ArrayList;
 /**
  * A class which represents the receiver transport layer
  */
@@ -10,7 +11,8 @@ public class ReceiverTransport
     private int seqNum;
     private int ackNum;
     private int expected;
-    private int mostRecentAck; //Used to denote the seq number of the most recently ack'd
+    private int senderLastAck;
+    ArrayList<Integer> receivedPackets;
 
     public ReceiverTransport(NetworkLayer nl){
         ra = new ReceiverApplication();
@@ -22,8 +24,9 @@ public class ReceiverTransport
     {
         seqNum = 0;
         ackNum = 0;
-        mostRecentAck = 0;
         expected = 0;
+        senderLastAck = 0;
+        receivedPackets = new ArrayList<Integer>();
     }
     
     /*
@@ -41,24 +44,35 @@ public class ReceiverTransport
         ra.receiveMessage(pkt.getMessage());
         //Packet ackPkt = new Packet(pkt.getMessage(), pkt.getSeqnum(), pkt.getAcknum(), 0); //Default code is to create a standard ack packet
         Packet ackPkt;
+        // Update the packet last acked on sender's end
+        if (pkt.getAcknum() > senderLastAck) {
+            senderLastAck = pkt.getAcknum();
+        }
         //This block of code is used to change how the program responds to an out of order packet from the sender
-        if(usingTCP){
-            
-            if(mostRecentAck+1 != pkt.getSeqnum() ){ //If we receive an out of order packet from the sender
-                
-            }else{//Otherwise, we receive an in order packet
-                
+        if( expected < pkt.getSeqnum() ){ //Out of order case
+            System.out.println("Out of order packet");
+            if (usingTCP) { 
+                // Buffer packets
+                receivedPackets.add(pkt.getSeqnum());
             }
-            ackPkt = new Packet(pkt.getMessage(), pkt.getSeqnum(), pkt.getAcknum(), 0);
-        }else{ //Using GBN
-            if( expected < pkt.getSeqnum() ){ //Out of order case
-                System.out.println("Out of order packet");
-                if(expected == 0){ //Initial case
-                    ackPkt = new Packet(pkt.getMessage(), 0, 0, 0);
-                }else{ //General case
-                    ackPkt = new Packet(pkt.getMessage(), expected-1, expected-1, 0);
+            if(expected == 0){ //Initial case
+                ackPkt = new Packet(pkt.getMessage(), -1, -1, 0);
+            }else{ //General case
+                ackPkt = new Packet(pkt.getMessage(), senderLastAck, senderLastAck, 0);
+            }
+        }else{ //Correct case
+            if (usingTCP) {
+                // Check to see if the next packet was buffered already.
+                for (int i = 0; i < receivedPackets.size(); i++) {
+                    if (receivedPackets.get(i).intValue() == expected+1) {
+                        expected++;
+                        receivedPackets.remove(i);
+                        i = 0;
+                    }
                 }
-            }else{ //Correct case
+                ackPkt = new Packet(pkt.getMessage(), expected, expected, 0);
+                expected++;
+            } else {
                 ackPkt = new Packet(pkt.getMessage(), pkt.getSeqnum(), pkt.getAcknum(), 0); //Default case
                 expected++;
             }
