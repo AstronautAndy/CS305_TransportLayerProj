@@ -43,18 +43,16 @@ public class SenderTransport
             System.out.println("  Sender transport is now sending message w/ text: " + msg.getMessage());
         }
         
-        // Sending a packet from the application layer.
-    
         // Remember that the constructor for the packet is (message, seqnum, acknum, checksum)
-        // Create the packet with appropriate parameters.
+        // Create the packet with appropriate parameters. Third param used only in TCP to let the receiver know our last acked packet.
         Packet pkt = new Packet(msg, seqNum, expectedAck-1, 0);
         // Set the checksum before sending the packet.
         pkt.setChecksum();
         
-        // Making sure we are within window size
+        // Set the max index of the window.
         int range = expectedAck + n - 1;
-        System.out.println("expectedAck + n -1: " + range);
         
+        // Check to see if we are within the window.
         if(seqNum <= range && seqNum >= range + 1 - n){
             // Within window so can send packet
             
@@ -76,10 +74,11 @@ public class SenderTransport
                 System.out.println("Unable to send a message due to window size constraint");
             }
             
+            // Add to the overflow buffer since not within window.
             overflowBuffer.add(pkt);
         }
         
-        // Update all values
+        // Increment sequence number.
         seqNum++;
     }
     
@@ -107,29 +106,32 @@ public class SenderTransport
                     }
                 }
                 
-                //If you receive an ack message out of order, update the expected ack number
+                //If you receive an ack message out of order, update the expected ack number.
                 expectedAck = pkt.getAcknum();
                 
                 // Kill the timer if we receive an ack.
                 tl.stopTimer();
+                // Don't restart the timer if there is nothing left to send.
                 if (windowBuffer.size() > 0) {
                     tl.startTimer(60);
                 }
                 
             } else {
+                // Received the correct ack.
                 System.out.println(" Received expected packet.");
                 
-                // Remove packets from buffer.
+                // Remove packet from buffer.
                 windowBuffer.remove(0);
                 
                 // Kill the timer if we receive an ack.
                 tl.stopTimer();
+                // Don't restart the timer if there is nothing left to send.
                 if (windowBuffer.size() > 0) {
                     tl.startTimer(60);
                 }
             }
             
-            System.out.println("Current expected ack: " + expectedAck);
+            // Incremented the expected ack number.
             expectedAck++;
             
             // Check to see if there are packets in overflow to be sent
@@ -145,11 +147,14 @@ public class SenderTransport
                 }
             }
             
+            // If we received a correct ack reset the duplicate total to 0.
             dupAcks = 0;
             
         } else {
+            // Received duplicate ack.
             System.out.println(" Received duplicate ack.");
             if (usingTCP) {
+                // Increment the duplicate ack count and retransmit if the count is a multiple of 3.
                 dupAcks++;
                 if (dupAcks % 3 == 0 && dupAcks > 0) {
                     // Fast retransmit
